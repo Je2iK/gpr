@@ -1,0 +1,7 @@
+database:
+  host: "localhost"
+  port: "5433"
+  user: "pawka"
+  password: "123456"
+  dbname: "lab1"
+  sslmode: "disable"

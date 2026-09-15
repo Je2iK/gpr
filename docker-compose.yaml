@@ -1,0 +1,11 @@
+services:
+  db:
+    image: postgres:15.3-alpine
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_USER: pawka
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: lab1
+    ports:
+      - "5433:5433"
