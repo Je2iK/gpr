@@ -8,22 +8,23 @@ import (
 )
 
 type UserHandler struct {
-	s *service.userService
+	s service.UserService
 }
-func NewUserHandler(s *service.userService) *UserHandler{
-	return &UserHandler{s : s}
+
+func NewUserHandler(s service.UserService) *UserHandler {
+	return &UserHandler{s: s}
 }
-func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request){
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 	var req models.CreateUserParams
-	if err:=json.NewDecoder(r.Body).Decode(&req); err != nil{
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	userId, err:= h.s.Register(r.Context(), req)
+	userId, err := h.s.Register(r.Context(), req)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(map[string]int{"id" : userId})
+	json.NewEncoder(w).Encode(map[string]int{"id": userId})
 }
