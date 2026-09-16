@@ -11,15 +11,25 @@ import (
 	"practice/internal/db"
 	"log"
 	"practice/internal/migrations"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"practice/internal/middlewares"
 )
 
 func main() {
+	r:= chi.NewRouter()
+	runmiddlewares(r)
+	r.Use(middleware.Logger)
+	r.Get("/", func(w http.ResponseWriter, r *http.Request){
+
+	})
 	ctx := context.Background()
 	cfg, err := config.Load()
 	if err != nil{
 		log.Fatalf("НЕ ЗАГРУЗИЛСЯ КОНФИГ: %v", err)
 		return 
 	}
+
 
 	pool, err := db.NewPool(ctx, cfg.Database.URL)
 	if err != nil{
@@ -30,14 +40,10 @@ func main() {
 	userRepository:= repository.NewUserRepository(pool)
 	userService:= service.NewUserService(userRepository)
 	userHandler:=handlers.NewUserHandler(userService)
-	http.HandleFunc("/users/add", userHandler.CreateUser)
-	http.HandleFunc("/users/delete", userHandler.DeleteUser)
-	http.HandleFunc("/", handlers.HelloGo)
+	r.Post("/users/add", userHandler.CreateUser)
+	r.Delete("/users/delete", userHandler.DeleteUser)
 	fmt.Println("Sta99900")
 
-	err = http.ListenAndServe(":8080", nil)
-	if err != nil {
-		fmt.Println("GetSuck")
-	}
-	
+	http.ListenAndServe(":8080", r)
+
 }
