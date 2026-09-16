@@ -2,7 +2,6 @@ package models
 
 
 type CreateUserParams struct {
-	Id int `json:"id"`
 	Name string `json:"name"`
 	Password string `json:"password"`
 }

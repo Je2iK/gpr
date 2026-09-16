@@ -8,4 +8,4 @@ services:
       POSTGRES_PASSWORD: 123456
       POSTGRES_DB: lab1
     ports:
-      - "5433:5433"
+      - "5433:5432"

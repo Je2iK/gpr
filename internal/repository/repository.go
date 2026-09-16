@@ -11,7 +11,7 @@ type UserRepository interface {
 	CreateUser(ctx context.Context, name string, password string) (int, error)
 	GetUserById(ctx context.Context, id int) (string, error)
 	GetUserIdByName (ctx context.Context, name string) (int, error)
-	DeleteUserByName(ctx context.Context, name string) (string, error)
+	DeleteUserByName(ctx context.Context, name string) (int, error)
 }
 type userRepository struct{
 	pool *pgxpool.Pool
@@ -52,12 +52,12 @@ func (r *userRepository) GetUserIdByName(ctx context.Context, name string) (int,
 	}
 	return id, nil
 }
-func (r *userRepository) DeleteUserByName(ctx context.Context,name string) (string, error){
-	query := `DELETE FROM users WHERE name = $1 RETURNING name;`
-	var deletedName string
-	err := r.pool.QueryRow(ctx, query, name).Scan(&deletedName)
+func (r *userRepository) DeleteUserByName(ctx context.Context,name string) (int, error){
+	query := `DELETE FROM users WHERE name = $1 RETURNING id;`
+	var userId int
+	err := r.pool.QueryRow(ctx, query, name).Scan(&userId)
 	if err != nil{
-		return " ", fmt.Errorf("Not find user: %w", err)
+		return 0, fmt.Errorf("Not find user: %w", err)
 	}
-	return deletedName, nil
+	return userId, nil
 }

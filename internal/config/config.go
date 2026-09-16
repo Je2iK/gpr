@@ -24,7 +24,7 @@ type DatabaseConfig struct{
 
 }
 func Load() (*Config, error){
-	configpath:=filepath.Join("config", "config.yaml")
+	configpath:=filepath.Join("internal", "config", "config.yaml")
 	file, err := os.ReadFile(configpath)
 	if err != nil{
 		return nil, err

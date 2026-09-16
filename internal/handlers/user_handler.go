@@ -25,6 +25,23 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	if userId == 0 {
+		http.Error(w, err.Error(), http.StatusConflict)
+	}
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(map[string]int{"id": userId})
+}
+func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request){
+	var req models.CreateUserParams
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	userId, err := h.s.Logout(r.Context(), req)
+	if err != nil{
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return		
+	}
+	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(map[string]int{"id": userId})
 }
